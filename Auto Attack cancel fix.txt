@@ -1,0 +1,45 @@
+0053152B
+
+alloc(newmem,2048)
+label(returnhere)
+label(newmem1)
+label(newmem2)
+label(newmem3)
+label(exit)
+label(exit1)
+
+newmem2:
+cmp [010A0000],1
+jne newmem3
+push edx
+push ebx
+mov edx,7FFFFFFF
+mov ebx,ffffffff
+cmp edx,ebx
+pop ebx
+pop edx
+mov [010A0000],0
+jmp exit1
+
+newmem3:
+cmp edx,77
+jne exit
+mov [010A0000],1
+jmp newmem2
+
+exit:
+cmp eax,000000EB
+jg GMSv83_4GB.exe+131541
+push [ebp+0C]
+jmp returnhere
+
+exit1:
+jg GMSv83_4GB.exe+131541
+push [ebp+0C]
+jmp returnhere
+
+"GMSv83_4GB.exe"+13152B:
+jmp newmem
+returnhere:
+
+

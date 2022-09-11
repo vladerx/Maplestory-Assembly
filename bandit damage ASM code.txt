@@ -1,0 +1,87 @@
+bandit skill damage scales with total dex on character
+
+dagger basic 0019DA80 esp
+claw basic 0019DA48 esp
+
+JMP 00967B8B
+1.   cmp esi,00401A2D // check savage blow skill
+2.   JNZ SHORT 00C17F28 
+3.   MOV DWORD PTR DS:[00C1845A],6 // scaling divided by 6 
+4.   mov DWORD PTR DS:[00C18455],1 
+5.   MOV DWORD PTR DS:[00C1843A],0 
+6.   push eax // save eax value
+7.   mov eax,DWORD PTR DS:[00C1842A] //stop repetition
+8.   INC EAX
+9.   mov DWORD PTR DS:[00C1842A], eax
+10.   xor eax,eax                 // reset zero flag
+11.   pop eax                     // pop back eax's value
+12.   JMP 00968176               // back to original program
+
+jmp 00c17f0c
+1.   fmul qword ptr [00AFE868]   
+2.   CMP ESP,19DA80  //check different settings
+3.   JE SHORT 00C17F52 (mov DWORD PTR DS:[00C18455],6)
+4.   CMP ESP,19DA48 //check different settings
+5.   JE SHORT 00C17F52 (mov DWORD PTR DS:[00C18455],6)
+6.   CMP ESP,19D8AC //check different settings
+7.   JE SHORT 00C17F52 (mov DWORD PTR DS:[00C18455],6)
+8.   CMP ESP,19D874 //check different settings
+9.   JE SHORT 00C17F52 (mov DWORD PTR DS:[00C18455],6)
+10.   mov DWORD PTR DS:[00C18450],ECX    // add DEX scaling
+11.   dec DWORD PTR DS:[00C1842A]
+12.   cmp DWORD PTR DS:[00C1842A],0 
+13.   jg SHORT 00C17F52(mov DWORD PTR DS:[00C1842A],1 ) //reset scaling
+14.   mov DWORD PTR DS:[00C18455],0
+15.   mov DWORD PTR DS:[00C1843A],0
+16.   jmp 00C17F55 (mov DWORD PTR DS:[00C1842A],1 )
+17.   mov DWORD PTR DS:[00C1843A],1
+18.   mov DWORD PTR DS:[00C1842A],2
+19.   jmp 0078FAC3                    // back to original program
+
+jmp 00c17f27
+1.   mov edi,eax   
+2.   cmp DWORD PTR DS:[00C1843A],0 // check if savage blow skill
+3.   jne 00C17Fe8 (mov eax,[ebp+10]) // if not SB do full DEX scaling
+4.   cmp DWORD PTR DS:[00C18455],0
+5.   je SHORT 00C17Fe8 (mov DWORD PTR DS:[00C1842A],1) 
+6.   push eax
+7.   mov eax, DWORD PTR DS:[00C18450]
+8.   push edx
+9.   mov DWORD PTR DS:[00C1844A],5 // savage blow and assassinate get less scaling
+10.   div DWORD PTR DS:[00C1844A]
+11.   mov DWORD PTR DS:[00C18450], eax
+12.   pop edx
+13.  dec DWORD PTR DS:[00C1845A]
+14.   xor eax,eax
+15.   pop eax
+16.   add EDI,DWORD PTR DS:[00C18450] // other bandit skills get full scaling
+17.  mov eax,[ebp+10]
+18.  cmp DWORD PTR DS:[00C1845A],0
+19.  jne SHORT 00C17Fe8 (EXIT)
+20.  mov DWORD PTR DS:[00C18455],0
+21.  mov DWORD PTR DS:[00C1843A],1
+22.   mov DWORD PTR DS:[00C1842A],1 
+23.  jmp 00790028 // back to original program
+24.   mov DWORD PTR DS:[00C1842A],1*
+25.  jmp 00790028 (add EDI,DWORD PTR DS:[00C18450]) // back to original program
+
+
+JMP 00C17F98
+1.   CMP EAX,406849 // check assassinate skill
+2.   JNZ SHORT 00C17FB3(EXIT)
+3.   MOV DWORD PTR DS:[00C1845A],4 // scaling divided by 4 
+4.   mov DWORD PTR DS:[00C18455],1
+5.   MOV DWORD PTR DS:[00C1843A],0
+6.   push eax
+7.   mov eax,DWORD PTR DS:[00C1842A]
+8.   INC EAX
+9.   mov DWORD PTR DS:[00C1842A], eax
+10.   xor eax,eax // reset zero flag
+11.   pop eax
+12.   jmp 00950B42 // back to original program
+
+00A6409D - > 00C1802A
+MOV DWORD PTR SS:[EBP-30],ESI
+LEA EAX,DWORD PTR SS:[EBP-5C]
+MOV DWORD PTR DS:[00C1842A],1
+JMP 00A640A3 // back to original program
